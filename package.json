@@ -1,0 +1,24 @@
+{
+  "name": "postgres-size-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "node ./built/test.ts",
+    "build": "tsc",
+    "migrate": "pnpm typeorm migration:run -d ormconfig.js",
+    "migrate:generate": "pnpm typeorm migration:generate -d ormconfig.js -o Init"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "pg": "^8.16.3",
+    "typeorm": "^0.3.25"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.14",
+    "typescript": "^5.8.3"
+  }
+}
