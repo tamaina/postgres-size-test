@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "node ./built/test.ts",
+    "test": "node ./built/test.js",
     "build": "tsc",
     "migrate": "pnpm typeorm migration:run -d ormconfig.js",
     "migrate:generate": "pnpm typeorm migration:generate -d ormconfig.js -o Init"
