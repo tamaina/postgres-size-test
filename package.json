@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "type": "module",
+	"packageManager": "pnpm@10.13.1",
   "scripts": {
     "test": "node ./jest.js --forceExit --config jest.config.cjs",
     "build": "tsc",
