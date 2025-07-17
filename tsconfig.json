@@ -43,7 +43,12 @@
         ]
     },
     "compileOnSave": false,
-    "include": [
-        "./**/*.ts"
-, "jest.config.cjs"    ]
+	"include": [
+		"src/**/*"
+	],
+	"exclude": [
+		"node_modules",
+		"test/**/*"
+	]
+    
 }
