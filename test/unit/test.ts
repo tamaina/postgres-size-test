@@ -74,7 +74,7 @@ describe('test', () => {
             ids.add(id);
             return {
                 id,
-                text: 'a'.repeat(512),
+                text: 'a'.repeat(256),
                 renoteId: null,
             };
         }));
@@ -85,7 +85,7 @@ describe('test', () => {
             renoteIds.add(id);
             return {
                 id,
-                text: 'b'.repeat(512),
+                text: 'b'.repeat(256),
                 // Pick a random renote ID from the previous set
                 renoteId: firstId,
             };
