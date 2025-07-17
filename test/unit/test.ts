@@ -2,7 +2,7 @@ import { initTestDb, resetDb } from "@/utils.js";
 import { Note } from '@/models/note.js';
 import { genAid } from '@/aid.js';
 import config from "@/config.js";
-import { DataSource, IsNull, LessThanOrEqual, MoreThan, Not, Repository } from "typeorm";
+import { DataSource, IsNull, LessThanOrEqual, MoreThan, MoreThanOrEqual, Not, Repository } from "typeorm";
 
 describe('test', () => {
     let db: DataSource;
@@ -128,16 +128,48 @@ describe('test', () => {
             await checkSize(db, `After VACUUM`);
         }
 
+        let secondIds = [] as string[];
+        await notesRepository.insert(Array.from({ length: 512 }, (_, i) => {
+            shift++;
+            const id = genAid(Date.now() + shift);
+            secondIds.push(id);
+            return {
+                id,
+                text: 'c'.repeat(512),
+                renoteId: null,
+            };
+        }));
+        await checkSize(db, `After inserting 512 notes (2nd wave)`);
+
         await notesRepository.insert(Array.from({ length: 512 }, (_, i) => {
             shift++;
             const id = genAid(Date.now() + shift);
             return {
                 id,
                 text: 'd'.repeat(512),
-                renoteId: null,
+                renoteId: firstId,
             };
         }));
-        await checkSize(db, `After inserting 512 more notes`);
+        await checkSize(db, `After inserting 512 notes (3rd wave)`);
+
+        // secondIdsは全部消す
+        if (operation === 'DELETE') {
+            await notesRepository.delete(secondIds);
+        } else if (operation === 'UPDATE') {
+            // Update all notes to set text to ''
+            await notesRepository.createQueryBuilder()
+                .update(Note)
+                .set({ text: '' })
+                .where({ id: MoreThanOrEqual(secondIds[0]) })
+                .andWhere({ id: LessThanOrEqual(secondIds[secondIds.length - 1]) })
+                .execute();
+        }
+        await checkSize(db, `After ${operation} secondIds`);
+
+        if (vacuum) {
+            await db.query(`VACUUM;`);
+            await checkSize(db, `After VACUUM`);
+        }
 
         await notesRepository.insert(Array.from({ length: 512 }, (_, i) => {
             shift++;
@@ -145,9 +177,9 @@ describe('test', () => {
             return {
                 id,
                 text: 'e'.repeat(512),
-                renoteId: firstId,
+                renoteId: null,
             };
         }));
-        await checkSize(db, `After inserting 512 more notes`);
+        await checkSize(db, `After inserting 512 notes (4th wave)`);
     });
 });
