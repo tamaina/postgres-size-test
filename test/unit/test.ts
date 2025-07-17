@@ -60,8 +60,13 @@ describe('test', () => {
         //#endregion
     });
 
-    test.each(['DELETE', 'UPDATE'])('Test %s operation', async (operation) => {
-        log += `\n\n=== ${operation} ===\n`;
+    test.each([
+        {operation: 'UPDATE', vacuum: true},
+        {operation: 'DELETE', vacuum: true},
+        {operation: 'UPDATE', vacuum: false},
+        {operation: 'DELETE', vacuum: false},
+    ])('Test $operation ', async ({operation, vacuum}) => {
+        log += `\n\n=== ${operation}, VACUUM: ${vacuum} ===\n`;
 
         let ids = new Set<string>();
         let firstId = genAid(Date.now());
@@ -74,7 +79,7 @@ describe('test', () => {
             ids.add(id);
             return {
                 id,
-                text: 'a'.repeat(256),
+                text: 'a'.repeat(512),
                 renoteId: null,
             };
         }));
@@ -85,7 +90,7 @@ describe('test', () => {
             renoteIds.add(id);
             return {
                 id,
-                text: 'b'.repeat(256),
+                text: 'b'.repeat(512),
                 // Pick a random renote ID from the previous set
                 renoteId: firstId,
             };
@@ -118,19 +123,10 @@ describe('test', () => {
             .getCount();
         log += `Count after ${operation}: ${cnt}\n`;
 
-        await notesRepository.insert(Array.from({ length: 512 }, (_, i) => {
-            shift++;
-            const id = genAid(Date.now() + shift);
-            return {
-                id,
-                text: 'c'.repeat(512),
-                renoteId: null,
-            };
-        }));
-        await checkSize(db, `After inserting 512 more notes`);
-
-        await db.query(`VACUUM;`);
-        await checkSize(db, `After VACUUM`);
+        if (vacuum) {
+            await db.query(`VACUUM;`);
+            await checkSize(db, `After VACUUM`);
+        }
 
         await notesRepository.insert(Array.from({ length: 512 }, (_, i) => {
             shift++;
