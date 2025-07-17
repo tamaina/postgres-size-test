@@ -23,11 +23,13 @@
         "emitDecoratorMetadata": true,
         "resolveJsonModule": true,
         "isolatedModules": true,
-		"rootDir": "./src",
-		"baseUrl": "./",
-		"paths": {
-			"@/*": ["./src/*"]
-		},
+        "rootDir": "./src",
+        "baseUrl": "./",
+        "paths": {
+            "@/*": [
+                "./src/*"
+            ]
+        },
         "outDir": "./built",
         "types": [
             "node"
@@ -43,5 +45,5 @@
     "compileOnSave": false,
     "include": [
         "./**/*.ts"
-    ]
+, "jest.config.cjs"    ]
 }
