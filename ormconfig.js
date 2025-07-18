@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
 import config from './built/config.js';
-import { Note } from './built/models/note.js';
+import { models } from './built/models-index.js';
 
 export default new DataSource({
 	type: 'postgres',
@@ -10,9 +10,7 @@ export default new DataSource({
 	password: config.db.password,
 	database: config.db.db,
 
-	entities: [
-		Note,
-	],
+	entities: models,
 	migrations: ['migration/*.js'],
 	migrationsTransactionMode: 'each',
 });

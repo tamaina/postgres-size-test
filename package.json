@@ -9,7 +9,7 @@
     "test": "node ./jest.js --forceExit --config jest.config.cjs",
     "build": "tsc",
     "migrate": "pnpm typeorm migration:run -d ormconfig.js",
-    "migrate:generate": "pnpm typeorm migration:generate -d ormconfig.js -o Init"
+    "migrate:generate": "pnpm typeorm migration:generate -d ormconfig.js -o"
   },
   "keywords": [],
   "author": "",

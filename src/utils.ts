@@ -1,6 +1,6 @@
 import config from './config.js';
 import { DataSource } from "typeorm";
-import { Note } from './models/note.js';
+import { models } from './models-index.js';
 
 export async function initTestDb(justBorrow = false, initEntities?: any[]) {
 	const db = new DataSource({
@@ -12,9 +12,7 @@ export async function initTestDb(justBorrow = false, initEntities?: any[]) {
 		database: config.db.db,
 		synchronize: true && !justBorrow,
 		dropSchema: true && !justBorrow,
-		entities: [
-            Note,
-        ],
+		entities: models,
 	});
 
 	await db.initialize();
