@@ -76,23 +76,19 @@ describe('test', () => {
         await checkSize(db, 'After inserting 5000 entries');
 
         await db.query(`VACUUM;`);
-        
         await checkSize(db, 'After VACUUM');
+        await db.query(`REINDEX TABLE CONCURRENTLY uri;`);
+        await checkSize(db, 'After REINDEX');
 
         await uriRepository.delete({
             id: MoreThan('0'),
         });
-
         await checkSize(db, 'After deleting all entries');
-
         console.log(await uriRepository.count());
 
         await db.query(`VACUUM;`);
-
         await checkSize(db, 'After VACUUM');
-
         await db.query(`REINDEX TABLE CONCURRENTLY uri;`);
-
         await checkSize(db, 'After REINDEX');
     });
 });
