@@ -1,6 +1,6 @@
 import { initTestDb, resetDb } from "@/utils.js";
 import { genAid } from '@/aid.js';
-import { DataSource, Repository } from "typeorm";
+import { DataSource, MoreThan, Repository } from "typeorm";
 import { Uri } from "@/models/uri.js";
 
 describe('test', () => {
@@ -78,5 +78,21 @@ describe('test', () => {
         await db.query(`VACUUM;`);
         
         await checkSize(db, 'After VACUUM');
+
+        await uriRepository.delete({
+            id: MoreThan('0'),
+        });
+
+        await checkSize(db, 'After deleting all entries');
+
+        console.log(await uriRepository.count());
+
+        await db.query(`VACUUM;`);
+
+        await checkSize(db, 'After VACUUM');
+
+        await db.query(`REINDEX TABLE CONCURRENTLY uri;`);
+
+        await checkSize(db, 'After REINDEX');
     });
 });
